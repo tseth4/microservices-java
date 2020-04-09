@@ -38,16 +38,9 @@ public class MovieCatalogResource {
 
 		
 		return ratings.getUserRating().stream().map(rating -> {
-//			Movie movie = restTemplate.getForObject("http://localhost:8082/movies/" + rating.getMovieId(), Movie.class);
-			
-			Movie movie = webClientBuilder.build() // webclient build patter and giving client
-				.get() // chaining mechanism to build upon this.  its a get method
-				.uri("http://localhost:8082/movies/" + rating.getMovieId()) // where do you want the request to be made
-				.retrieve() // go fetch
-				.bodyToMono(Movie.class) // whatever body you get back convert it into an instance of thie movie class. Mono is reactive way of promise
-				.block(); // tells that mono is fullfilled
-			
-			
+			//for each movie ID, call the movie info service and get details
+			Movie movie = restTemplate.getForObject("http://localhost:8082/movies/" + rating.getMovieId(), Movie.class);
+			// put them all together
 			return new CatalogItem(movie.getName(), "Desc", rating.getRating());
 	})
 	.collect(Collectors.toList());
